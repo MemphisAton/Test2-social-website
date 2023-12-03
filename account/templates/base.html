@@ -1,4 +1,14 @@
 {% load static %}
+<!--  Меню сайта отображается только для аутентифицированных пользова
+телей. При этом проверяется переменная section, чтобы добавить атрибут
+selected CSS-класса в списковый пункт <li> меню; указанный пункт меню
+относится к текущему разделу. Благодаря этому соответствующий текущему
+разделу пункт меню будет выделяться с по мощью CSS. Если пользователь
+аутентифицирован, то отображается настоящее имя пользователя и ссылка
+на страницу выхода; в противном случае отображается ссылка на страницу
+входа. Если настоящее имя пользователя является пустым, то вместо него
+отображается пользовательское имя (username) при помощи request.user.
+ first_name|default:request.user.username. -->
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,6 +18,27 @@
 <body>
 <div id="header">
     <span class="logo">Bookmarks</span>
+    {% if request.user.is_authenticated %}
+    <ul class="menu">
+        <li {% if section == "dashboard" %}class="selected"{% endif %}>
+        <a href='{% url "dashboard" %}'>My dashboard</a>
+        </li>
+        <li {% if section == "images" %}class="selected"{% endif %}>
+        <a href="#">Images</a>
+        </li>
+        <li {% if section == "people" %}class="selected"{% endif %}>
+        <a href="#">People</a>
+        </li>
+    </ul>
+    {% endif %}
+    <span class="user">
+      {% if request.user.is_authenticated %}
+        Hello {{ request.user.first_name|default:request.user.username }},
+        <a href='{% url "logout" %}'>Logout</a>
+      {% else %}
+        <a href='{% url "login" %}'>Log-in</a>
+      {% endif %}
+    </span>
 </div>
 <div id="content">
     {% block content %}

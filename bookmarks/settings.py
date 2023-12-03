@@ -129,3 +129,12 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_REDIRECT_URL = 'dashboard'
+# сообщает Django URL-адрес, на который следует перенаправлять пользователя после успешного входа,
+# если в запросе нет параметра next
+LOGIN_URL = 'login'
+# URL-адрес, на который следует перенаправлять пользователя, чтобы зарегистрировать его вход
+# (например, представления, в которых используется декоратор login_required)
+LOGOUT_URL = 'logout'
+# URL-адрес, на который следует перенаправлять пользователя, чтобы зарегистрировать его выход.
