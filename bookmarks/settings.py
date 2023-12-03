@@ -138,3 +138,6 @@ LOGIN_URL = 'login'
 # (например, представления, в которых используется декоратор login_required)
 LOGOUT_URL = 'logout'
 # URL-адрес, на который следует перенаправлять пользователя, чтобы зарегистрировать его выход.
+
+# описание в консоли вместо отправки реальных писем
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
