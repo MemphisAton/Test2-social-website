@@ -57,7 +57,7 @@ def user_login(request):
                 return HttpResponse('Invalid login')
     else:
         form = LoginForm()
-    return render(request, 'account/login.html', {'form': form})
+    return render(request, 'account/registration/login.html', {'form': form})
 
 
 @login_required  # проверяет аутентификацию текущего пользователя, либо да либо URL-адрес входа
