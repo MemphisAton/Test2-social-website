@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 from pathlib import Path
 
+import images.apps
 from config import load_config
 
 config = load_config(path='.env')
@@ -40,7 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'social_django',
-    'django_extensions'
+    'django_extensions',
+    'images.apps.ImagesConfig',
 
 ]
 
