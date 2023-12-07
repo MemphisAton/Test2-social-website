@@ -65,9 +65,7 @@ def dashboard(request):
     '''
     отображения информа ционной панели при входе пользователей в свои учетные записи
     '''
-    return render(request,
-                  'account/dashboard.html',
-                  {'section': 'dashboard'})
+    return render(request,'account/dashboard.html', {'section': 'dashboard'})
 
 
 def register(request):
