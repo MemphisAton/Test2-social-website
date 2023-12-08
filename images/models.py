@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.urls import reverse
 from django.utils.text import slugify
 
 
@@ -21,8 +22,11 @@ class Image(models.Model):
                                         related_name='images_liked',
                                         blank=True)
 
+    def get_absolute_url(self):
+        return reverse('images:detail', args=[self.id, self.slug])
+
     class Meta:
-        indexes = [models.Index(fields=['-created']),]
+        indexes = [models.Index(fields=['-created']), ]
         ordering = ['-created']
 
     def __str__(self):
