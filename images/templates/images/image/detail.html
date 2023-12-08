@@ -7,17 +7,24 @@
 {% block content %}
 <h1>{{ image.title }}</h1>
 
- {% load thumbnail %}
- <a href="{{ image.image.url }}">
-      <img src="{% thumbnail image.image 300x0 %}" class="image-detail">
- </a>
+{% load thumbnail %}
+<a href="{{ image.image.url }}">
+    <img src="{% thumbnail image.image 300x0 %}" class="image-detail">
+</a>
 
-{% with total_likes=image.users_like.count %}
+{% with total_likes=image.users_like.count users_like=image.users_like.all %}
 <div class="image-info">
     <div>
         <span class="count">
-          {{ total_likes }} like{{ total_likes|pluralize }}
+            <span class="total">{{ total_likes }}</span> like{{ total_likes|pluralize }}
         </span>
+        <a href="#" data-id="{{ image.id }}" data-action="{% if request.user in users_like %}un{% endif %}like" class="like button">
+            {% if request.user not in users_like %}
+            Like
+            {% else %}
+            Unlike
+            {% endif %}
+        </a>
     </div>
     {{ image.description|linebreaks }}
 </div>
@@ -34,4 +41,48 @@
     {% endfor %}
 </div>
 {% endwith %}
+{% endblock %}
+
+{% block domready %}
+const url = '{% url "images:like" %}';
+const csrftoken = Cookies.get('csrftoken'); // Убедитесь, что вы используете js-cookie правильно
+
+var options = {
+  method: 'POST',
+  headers: {'X-CSRFToken': csrftoken},
+  credentials: 'include', // Убедитесь, что cookies отправляются с запросом
+  mode: 'same-origin'
+};
+
+document.querySelector('a.like').addEventListener('click', function(e){
+  e.preventDefault();
+  var likeButton = this;
+  var formData = new FormData();
+  formData.append('id', likeButton.dataset.id);
+  formData.append('action', likeButton.dataset.action);
+  options['body'] = formData;
+
+  fetch(url, options)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok ' + response.statusText);
+      }
+      return response.json();
+    })
+    .then(data => {
+      if (data['status'] === 'ok') {
+        var previousAction = likeButton.dataset.action;
+        var action = previousAction === 'like' ? 'unlike' : 'like';
+        likeButton.dataset.action = action;
+        likeButton.textContent = action.charAt(0).toUpperCase() + action.slice(1); // Capitalize first letter
+
+        var likeCount = document.querySelector('span.count .total');
+        var totalLikes = parseInt(likeCount.textContent, 10);
+        likeCount.textContent = previousAction === 'like' ? totalLikes + 1 : totalLikes - 1; // Исправьте на минус
+      }
+    })
+    .catch(error => {
+      console.error('Fetch Error:', error);
+    });
+});
 {% endblock %}
